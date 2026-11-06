@@ -9,11 +9,14 @@ import { defaultValues, IFormLogin } from "./types";
 
 const schema = yup
   .object({
-    email: yup.string().email("E-mail inválido").required("Campo obrigatório"),
+    email: yup
+      .string()
+      .email("Digite um e-mail válido (ex: usuario@gmail.com)")
+      .required("O campo e-mail é obrigatório"),
     password: yup
       .string()
-      .min(6, "No minimo 6 caracteres")
-      .required("Campo obrigatório"),
+      .min(6, "A senha deve ter no mínimo 6 caracteres")
+      .required("O campo senha é obrigatório"),
   })
   .required();
 
@@ -23,7 +26,7 @@ const Login = () => {
     formState: { errors, isValid },
   } = useForm<IFormLogin>({
     resolver: yupResolver(schema),
-    mode: "onBlur",
+    mode: "onChange", // Trocar para onChange valida assim que o usuário digita
     defaultValues,
     reValidateMode: "onChange",
   });
@@ -36,7 +39,7 @@ const Login = () => {
           <Spacing />
           <Input
             name="email"
-            placeholder="Email"
+            placeholder="Ex: seuemail@gmail.com"
             control={control}
             errorMessage={errors?.email?.message}
           />
@@ -44,12 +47,12 @@ const Login = () => {
           <Input
             name="password"
             type="password"
-            placeholder="Senha"
+            placeholder="Mínimo de 6 caracteres"
             control={control}
             errorMessage={errors?.password?.message}
           />
           <Spacing />
-          <Button title="Entrar" />
+          <Button title="Entrar" disabled={!isValid} />
         </Column>
       </LoginContainer>
     </Container>
